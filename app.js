@@ -5,7 +5,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-    res.send('Welcome to the EC2 Deployment Homepage!');
+    res.send('Welcome to the EC2 Deployment Homepage Testing!');
 });
 
 // 1. GET route: Renders the HTML form to the user
