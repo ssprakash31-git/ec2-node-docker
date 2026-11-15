@@ -4,7 +4,7 @@ pipeline {
         // The Docker Hub repository to store the built image
         DOCKER_IMAGE = 'ssprakash/siva-image-repo'
         // The Private or Public IP of the target deployment EC2 instance
-        TARGET_EC2_IP = '54.90.191.254' 
+        TARGET_EC2_IP = '13.220.184.111' 
     }
     stages {
         stage('Checkout Source Code') {
@@ -32,15 +32,20 @@ pipeline {
         
         stage('Build & Push Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                    sh "echo \$PASS | docker login -u \$USER --password-stdin"
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                    sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
                     sh "docker build -t ${DOCKER_IMAGE}:${env.BUILD_NUMBER} ."
                     sh "docker push ${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
                 }
             }
         }
         
+        // NEW CONDITIONAL LOGIC: This stage ONLY runs on the main branch
         stage('Deploy to Target EC2') {
+            when {
+                // Evaluates true whether Jenkins sees the branch as 'main' or 'origin/main'
+                expression { env.GIT_BRANCH == 'origin/main' || env.GIT_BRANCH == 'main' }
+            }            
             steps {
                 // Use the SSH Agent plugin to connect to the target EC2 instance
                 sshagent(['target-ec2-key']) {
