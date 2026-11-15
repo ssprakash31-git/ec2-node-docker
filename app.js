@@ -12,9 +12,9 @@ app.get('/', (req, res) => {
 app.get('/hobby', (req, res) => {
     res.send(`
         <form method="POST" action="/hobby">
-            <label>Name: <input type="text" name="userName" required></label><br>
-            <label>Hobby: <input type="text" name="userHobby" required></label><br>
-            <button type="submit">Submit</button>
+            <label>Enter your Name: <input type="text" name="userName" required></label><br><br>
+            <label>Enter your Hobby: <input type="text" name="userHobby" required></label><br><br>
+            <button type="submit">Submit your details</button>
         </form>
     `);
 });
